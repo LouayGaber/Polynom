@@ -1,0 +1,75 @@
+package myMath;
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+
+import de.erichseifert.gral.data.DataTable;
+import de.erichseifert.gral.plots.PlotArea;
+import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.lines.AbstractLineRenderer2D;
+import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
+import de.erichseifert.gral.plots.lines.LineRenderer;
+import de.erichseifert.gral.plots.points.PointRenderer;
+import de.erichseifert.gral.ui.InteractivePanel;
+
+
+public class SineGraph extends JFrame{
+	private static final long serialVersionUID=1L;
+	
+	
+	public SineGraph()  throws FileNotFoundException,IOException {
+		setTitle("Polynomial Drawer beta'");
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(900,800);
+		
+		DataTable data=new DataTable(Double.class,Double.class);
+		DataTable datamax=new DataTable(Double.class,Double.class);
+		Polynom p=new Polynom("0.2x^4+-1.5x^3+3.0x^2+-1.0x+-5");
+		//p.derivative();
+		for(double x=-3.0;x<=6;x+=0.25) {
+			double y=p.f(x);
+			data.add(x,y);
+			if((p.f(x)+0.01>0)&&(p.f(x)-0.01<0)){
+				datamax.add(x,p.f(x));
+				System.out.println("x+"+x+" y "+y);
+			
+				
+			}
+			if((p.f(x)+0.01<0)&&(p.f(x)-0.01>0)) {
+				datamax.add(x,y);
+				
+			}
+					
+			
+		}
+		XYPlot plot=new XYPlot(data);
+		plot.add(datamax);
+		plot.addPointRenderer(datamax, null);
+		plot.getPointRenderers(datamax).get(0).setColor(Color.RED);
+		getContentPane().add(new InteractivePanel(plot));
+		LineRenderer Lines = new DefaultLineRenderer2D();
+		Lines.setColor(Color.black);
+		plot.setLineRenderers(data, Lines);
+		plot.getAxisRenderer(XYPlot.AXIS_Y).setTickSpacing(20.0);
+		
+	
+		
+		
+		
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		SineGraph frame=null;
+		try {
+			frame=new SineGraph();
+		} catch (IOException e) {
+		}
+		frame.setVisible(true);
+	}
+	
+	
+}
