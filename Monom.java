@@ -155,11 +155,9 @@ public class Monom implements function{
 	private int _power;
 	@Override
 	public double f(double x) {
-		if(x==0)
-			return 0;
-		double y=_coefficient*(Math.pow(x, _power));
-		return y;
-
+		x = Math.pow( x , this._power );
+	      x *= this._coefficient;
+	      return x ; 
 	}
 	public void Derivative() {
 		int nextpower=get_power()-1;
