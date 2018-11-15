@@ -1,5 +1,7 @@
 package myMath;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -43,11 +45,12 @@ public class Polynom implements Polynom_able{
 	}
 
 	public Polynom(Monom m) {//Polynom constructor that create a polynom with a only one monom 
-		if(poly.isEmpty()) {
-			ArrayList<Monom> p=new ArrayList<Monom>();
-			p.add(m);
-		} else
-			poly.add(m);
+		Polynom p=new Polynom();
+		p.poly=this.poly;
+		if(p.poly.isEmpty()) {
+			p.poly.add(m);
+		}else
+			p.poly.add(m);
 		Collections.sort(poly,new Monom_Comperator());
 
 	}
@@ -187,14 +190,21 @@ public class Polynom implements Polynom_able{
 	@Override
 	public double root(double x0, double x1, double eps) //root function will give us root of our poly by entring 2 points and eps . so we will check on every iteration the mid and take the negative side then returning the mid when the mid became < from eps 
 	{
+		if(x1<x0) {
+			double tmp=x0;
+			x0=x1;
+			x1=tmp;
+		}
 		double xleft=x0;
 		double xright=x1;
 		double fxleft=this.f(xleft);
 		double fxright=this.f(xright);
 		double interval=xright-xleft;
 		double xmid,fxmid;
-		if(fxright*fxleft>0)
+		if(fxright*fxleft>0) {
 			System.out.println("have to be a negetive number to use root function!!!");
+			return -1;
+		}
 		xmid=(xleft+xright)/2;
 		fxmid=this.f(xmid);
 		while(interval>eps) {
@@ -243,20 +253,34 @@ public class Polynom implements Polynom_able{
 	 */
 	@Override
 	public double area(double x0, double x1, double eps) {
+		double k;
+		double area = 0;
+		double xleft=x0;
+		double xright=x1;
+		for(double j = xleft; j<xright; j=j+eps) {
+			for(int i = 0; i<this.poly.size(); i++) {
+				double y = j+(eps/2);
+				k = this.poly.get(i).f(y); 
+				area = area + (k*eps); 
+			}
+		}
+		return area; 
+
 		
-		double left=x0;
+	/*	double xleft=x0;
+		double xright=x1;
 		double sum=0;
-		double interval=x1-x0;
-		double fx1=this.f(x1);
-		double fx0=this.f(x0);
-		double  res=(int)((interval)*(fx1-fx0))/eps;
+		double interval=xright-xleft;
+		double fxright=this.f(xright);
+		double fxleft=this.f(xleft);
+		double  res=(int)((interval)*(fxright-fxleft))/eps;
 		double deltax=(interval)/res;
-		for(int i=0;i<res;i++){
-			sum+=this.f(left)*deltax;
-			left=+deltax;
+		for(int i=0;i<Math.abs(res);i++){
+			sum+=this.f(xleft)*deltax;
+			xleft=+deltax;
 		}
 		return 	Math.abs(sum) ;
-		
+		*/
 	}
 
 	@Override
@@ -292,6 +316,13 @@ public class Polynom implements Polynom_able{
 			else res+="+"+m.toString();
 		}
 		return res;
+	}
+	public static void main(String[] args) {
+		double eps=Double.MIN_VALUE;
+		Polynom p1=new Polynom("5x^2+2x^1");
+		double res=p1.root(0.5, 1.5, eps);
+		System.out.println(res);
+		
 	}
 
 
