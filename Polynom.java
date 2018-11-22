@@ -31,7 +31,10 @@ public class Polynom implements Polynom_able{
 		if(s.length()==0)//checking if the string is empty
 			throw  new RuntimeException("Error : polynom cann't be Empty ");
 		String s2="";
+		s=s.replaceAll(" ", "");
+		s=s.replaceAll("-", "+-");
 		String[] sub=s.split("\\+");
+
 		for (int i = 0; i < sub.length; i++) {
 			if(sub[i].equals(s2))
 				continue;
@@ -190,7 +193,26 @@ public class Polynom implements Polynom_able{
 	@Override
 	public double root(double x0, double x1, double eps) //root function will give us root of our poly by entring 2 points and eps . so we will check on every iteration the mid and take the negative side then returning the mid when the mid became < from eps 
 	{
-		if(x1<x0) {
+		
+		if(this.f(x0)*this.f(x1)>=0) {
+			System.out.println("You have not assumed"+" right a and b ");
+			return -1;
+			
+		}
+		double c=x0;
+		while((x1-x0)>=eps) {
+			c=(x1+x0)/2;
+			 if(this.f(c)==0.0)
+				 break;
+			 else if (this.f(c)*this.f(x0)<0)
+				 x1=c;
+			 else
+				 x0=c;
+		}
+			
+			return c;
+		}
+		/*if(x1<x0) {
 			double tmp=x0;
 			x0=x1;
 			x1=tmp;
@@ -215,8 +237,8 @@ public class Polynom implements Polynom_able{
 			xright=xmid;
 		}
 		return xmid;
-
-	}
+*/
+	
 
 
 
@@ -319,8 +341,8 @@ public class Polynom implements Polynom_able{
 	}
 	public static void main(String[] args) {
 		double eps=Double.MIN_VALUE;
-		Polynom p1=new Polynom("5x^2+2x^1");
-		double res=p1.root(0.5, 1.5, eps);
+		Polynom p1=new Polynom("x^3+2x^1+2");
+		double res=p1.root(-10, 10,eps);
 		System.out.println(res);
 		
 	}
